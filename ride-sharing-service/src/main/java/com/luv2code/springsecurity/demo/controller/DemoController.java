@@ -22,6 +22,7 @@ import com.luv2code.springsecurity.demo.entity.Role;
 import com.luv2code.springsecurity.demo.entity.User;
 import com.luv2code.springsecurity.demo.service.UserService;
 import com.luv2code.springsecurity.demo.user.DriverCrm;
+import com.luv2code.springsecurity.demo.user.RiderCrm;
 import com.luv2code.springsecurity.demo.user.UserCrm;
 
 @Controller
@@ -149,6 +150,28 @@ public class DemoController {
 		
 		// save it to the DB
 		userService.update(user);
+		return "redirect:/employees";
+	}
+	
+	@GetMapping("/rideRequest")
+	public String requestRide(Model theModel) {
+		RiderCrm theRiderCrm = new RiderCrm();
+		theModel.addAttribute("riderRequest", theRiderCrm);
+		return "ride-request";
+	}
+	
+	@PostMapping("/processRideRequest")
+	public String processRideRequest(@Valid @ModelAttribute("riderRequest") RiderCrm theRiderCrm,
+			BindingResult theBindingResult) {
+		
+		System.out.println("Your location: " + theRiderCrm.getCurrentLocation());
+		
+		System.out.println("Destination: " + theRiderCrm.getDestination());
+		
+		System.out.println("Date: " + theRiderCrm.getDate());
+		
+		System.out.println("Time: " + theRiderCrm.getTime());
+		
 		return "redirect:/employees";
 	}
 }
