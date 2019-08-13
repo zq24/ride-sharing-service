@@ -1,12 +1,21 @@
 package com.luv2code.springsecurity.demo.dao;
 
+import java.util.List;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.luv2code.springsecurity.demo.entity.RequestStatus;
+import com.luv2code.springsecurity.demo.entity.RideRequest;
 import com.luv2code.springsecurity.demo.entity.User;
+import com.luv2code.springsecurity.demo.user.SharerCrm;
 
 @Repository
 public class UserDaoImplementation implements UserDao {
@@ -54,5 +63,29 @@ public class UserDaoImplementation implements UserDao {
 		}
 
 		return theUser;
+	}
+
+	@Override
+	public void save(RideRequest theRideRequest) {
+		Session currentSession = sessionFactory.getCurrentSession();
+		
+		currentSession.saveOrUpdate(theRideRequest);
+	}
+
+	@Override
+	public List<RideRequest> query(SharerCrm theSharerCrm, User user) {
+		
+		Session currentSession = sessionFactory.getCurrentSession();
+		CriteriaBuilder builder = currentSession.getCriteriaBuilder();
+		CriteriaQuery<RideRequest> criteria = builder.createQuery(RideRequest.class);
+		Root<RideRequest> root = criteria.from(RideRequest.class);
+		criteria.select(root);
+		
+		criteria.where(builder.equal(root.get("requestStatus"), RequestStatus.SHARED_ALLOWED_OPEN),
+				builder.notEqual(root.get("user"), user));
+		
+		List<RideRequest> result = currentSession.createQuery(criteria).getResultList();
+		System.out.println(result);
+		return result;
 	}
 }

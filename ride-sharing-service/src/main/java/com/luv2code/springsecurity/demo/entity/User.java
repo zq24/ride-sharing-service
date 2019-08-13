@@ -1,5 +1,6 @@
 package com.luv2code.springsecurity.demo.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -12,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -49,6 +51,11 @@ public class User {
 	@OneToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="driver_detail_id")
 	private Driver driver;
+	
+	@OneToMany(mappedBy="user",
+			cascade= {CascadeType.PERSIST, CascadeType.MERGE,
+					CascadeType.DETACH, CascadeType.REFRESH})
+	private List<RideRequest> rideRequests;
 	
 	public User() {}
 
@@ -116,9 +123,26 @@ public class User {
 		this.driver = driver;
 	}
 	
+	public List<RideRequest> getRideRequests() {
+		return rideRequests;
+	}
+
+	public void setRideRequests(List<RideRequest> rideRequests) {
+		this.rideRequests = rideRequests;
+	}
+
 	// add the convenience method for adding a role to this user
 	public void addRole(Role theRole) {
 		this.roles.add(theRole);
 		theRole.getUsers().add(this);
+	}
+	
+	public void addRideRequest(RideRequest rideRequest) {
+		if (rideRequests == null) {
+			rideRequests = new ArrayList<>();
+		}
+		
+		rideRequests.add(rideRequest);
+		rideRequest.setUser(this);
 	}
 }

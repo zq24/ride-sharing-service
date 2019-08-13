@@ -1,6 +1,9 @@
 package com.luv2code.springsecurity.demo.controller;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -18,11 +21,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.luv2code.springsecurity.demo.entity.Driver;
+import com.luv2code.springsecurity.demo.entity.RequestStatus;
+import com.luv2code.springsecurity.demo.entity.RideRequest;
 import com.luv2code.springsecurity.demo.entity.Role;
 import com.luv2code.springsecurity.demo.entity.User;
 import com.luv2code.springsecurity.demo.service.UserService;
 import com.luv2code.springsecurity.demo.user.DriverCrm;
 import com.luv2code.springsecurity.demo.user.RiderCrm;
+import com.luv2code.springsecurity.demo.user.SharerCrm;
 import com.luv2code.springsecurity.demo.user.UserCrm;
 
 @Controller
@@ -172,6 +178,67 @@ public class DemoController {
 		
 		System.out.println("Time: " + theRiderCrm.getTime());
 		
+		System.out.println("Vehicle Type: " + theRiderCrm.getVehicleType());
+		
+		System.out.println("Shareable: " + theRiderCrm.getShareable());
+		
+		System.out.println("Special Request: " + theRiderCrm.getSpecialRequest());
+		
+		if (theBindingResult.hasErrors()) {
+			return "ride-request";
+		}
+		
+		RideRequest theRideRequest = new RideRequest();
+		theRideRequest.setCustomerLocation(theRiderCrm.getCurrentLocation());
+		theRideRequest.setDestination(theRiderCrm.getDestination());
+		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm a");
+		String dateTime = theRiderCrm.getDate() + " " + theRiderCrm.getTime();
+		System.out.println(dateTime);
+		LocalDateTime formatDateTime = LocalDateTime.parse(dateTime, formatter);
+		
+		theRideRequest.setDateTime(formatDateTime);
+		theRideRequest.setVehicleType(theRiderCrm.getVehicleType());
+		theRideRequest.setShareable(theRiderCrm.getShareable());
+		theRideRequest.setSpecialRequest(theRiderCrm.getSpecialRequest());
+		if (theRiderCrm.getShareable().equals("yes")) {
+			theRideRequest.setRequestStatus(RequestStatus.SHARED_ALLOWED_OPEN);
+		} else {
+			theRideRequest.setRequestStatus(RequestStatus.SHARED_NOT_ALLOWED_OPEN);
+		}
+		theRideRequest.setTotalPassengers(theRiderCrm.getTotalPassengers());
+		
+		Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();
+		String username = loggedInUser.getName();
+		User user = userService.findUserByUsername(username);
+		
+		theRideRequest.setUser(user);
+		userService.update(theRideRequest);
+		
 		return "redirect:/employees";
+	}
+	
+	@GetMapping("/joinRide")
+	public String joinRide(Model theModel) {
+		SharerCrm theSharerCrm = new SharerCrm();
+		theModel.addAttribute("theSharerCrm", theSharerCrm);
+		return "join-a-ride";
+	}
+	
+	@PostMapping("/processJoinRequest")
+	public String processJoinRequest(@Valid @ModelAttribute("theSharerCrm") SharerCrm theSharerCrm,
+			BindingResult theBindingResult) {
+		
+		if (theBindingResult.hasErrors()) {
+			return "join-a-ride";
+		}
+		
+		// get the user id
+		Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();
+		String username = loggedInUser.getName();
+		User user = userService.findUserByUsername(username);
+		
+		List<RideRequest> joinRequestSearch = userService.query(theSharerCrm, user);
+		return "join-ride-search-result";
 	}
 }

@@ -14,8 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.luv2code.springsecurity.demo.dao.UserDao;
+import com.luv2code.springsecurity.demo.entity.RideRequest;
 import com.luv2code.springsecurity.demo.entity.Role;
 import com.luv2code.springsecurity.demo.entity.User;
+import com.luv2code.springsecurity.demo.user.SharerCrm;
 import com.luv2code.springsecurity.demo.user.UserCrm;
 
 @Service
@@ -75,5 +77,19 @@ public class UserServiceImplementation implements UserService {
 	@Transactional
 	public void update(User theUser) {
 		userDao.save(theUser);
+	}
+
+	@Override
+	@Transactional
+	public void update(RideRequest theRideRequest) {
+		userDao.save(theRideRequest);
+	}
+
+	@Override
+	@Transactional
+	public List<RideRequest> query(SharerCrm theSharerCrm, User user) {
+		
+		List<RideRequest> joinRequestList = userDao.query(theSharerCrm, user);
+		return joinRequestList;
 	}
 }

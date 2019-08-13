@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Request a Ride</title>
+<title>Join a Ride</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet"
@@ -28,8 +28,8 @@ $(document).ready(function(){
 </head>
 <body>
 	<form:form
-		action="${pageContext.request.contextPath}/processRideRequest"
-		method="POST" modelAttribute="riderRequest">
+		action="${pageContext.request.contextPath}/processJoinRequest"
+		method="POST" modelAttribute="theSharerCrm">
 
 		<label for="yourLocation">Your Location</label>
 		<form:input path="currentLocation" id="yourLocation" />
@@ -60,12 +60,6 @@ $(document).ready(function(){
 		Type 4<form:radiobutton path="vehicleType" value="TypeFour" />
 		Does Not Matter<form:radiobutton path="vehicleType" value="DoesNotMatter" />
 		<form:errors path="vehicleType" />
-		<br>
-		
-		<label>Could this ride be shared with others?</label>
-		Yes<form:radiobutton path="shareable" value="yes" />
-		No<form:radiobutton path="shareable" value="no" />
-		<form:errors path="shareable" />
 		<br>
 		
 		<label for="specialRequest">Any other request?</label>

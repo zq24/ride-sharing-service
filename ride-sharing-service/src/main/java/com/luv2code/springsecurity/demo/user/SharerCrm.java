@@ -5,7 +5,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-public class RiderCrm {
+public class SharerCrm {
 	
 	@NotNull(message="is required")
 	@Size(min=1, message="is required")
@@ -25,16 +25,13 @@ public class RiderCrm {
 	private String vehicleType;
 	
 	@NotNull(message="is required")
-	private String shareable;
-	
-	@NotNull(message="is required")
 	@Min(value=1, message="must be greater than or equal to 1")
 	@Max(value=4, message="must be less than or equal to 4")
 	private int totalPassengers;
 	
 	private String specialRequest;
 	
-	public RiderCrm() {}
+	public SharerCrm() {}
 
 	public String getCurrentLocation() {
 		return currentLocation;
@@ -76,12 +73,12 @@ public class RiderCrm {
 		this.vehicleType = vehicleType;
 	}
 
-	public String getShareable() {
-		return shareable;
+	public int getTotalPassengers() {
+		return totalPassengers;
 	}
 
-	public void setShareable(String shareable) {
-		this.shareable = shareable;
+	public void setTotalPassengers(int totalPassengers) {
+		this.totalPassengers = totalPassengers;
 	}
 
 	public String getSpecialRequest() {
@@ -92,17 +89,10 @@ public class RiderCrm {
 		this.specialRequest = specialRequest;
 	}
 
-	public int getTotalPassengers() {
-		return totalPassengers;
-	}
-
-	public void setTotalPassengers(int totalPassengers) {
-		this.totalPassengers = totalPassengers;
-	}
-
 	@Override
 	public String toString() {
-		return "RiderCrm [currentLocation=" + currentLocation + ", destination=" + destination + ", date=" + date
-				+ ", time=" + time + "]";
+		return "SharerCrm [currentLocation=" + currentLocation + ", destination=" + destination + ", date=" + date
+				+ ", time=" + time + ", vehicleType=" + vehicleType + ", totalPassengers=" + totalPassengers
+				+ ", specialRequest=" + specialRequest + "]";
 	}
 }
