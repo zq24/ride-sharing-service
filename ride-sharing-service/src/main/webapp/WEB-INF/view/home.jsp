@@ -69,6 +69,10 @@
 	<p>
 		<a href="${pageContext.request.contextPath}/joinRide">Join a Ride</a>
 	</p>
+	
+	<p>
+		<a href="${pageContext.request.contextPath}/driverRideSearching">Driver Ride Searching</a>
+	</p>
 
 	<!-- Add a logout button -->
 	<form:form action="${pageContext.request.contextPath}/logout"

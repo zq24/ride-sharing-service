@@ -19,11 +19,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.luv2code.springsecurity.demo.entity.Driver;
 import com.luv2code.springsecurity.demo.entity.RequestStatus;
 import com.luv2code.springsecurity.demo.entity.RideRequest;
 import com.luv2code.springsecurity.demo.entity.Role;
+import com.luv2code.springsecurity.demo.entity.Sharer;
 import com.luv2code.springsecurity.demo.entity.User;
 import com.luv2code.springsecurity.demo.service.UserService;
 import com.luv2code.springsecurity.demo.user.DriverCrm;
@@ -32,6 +36,7 @@ import com.luv2code.springsecurity.demo.user.SharerCrm;
 import com.luv2code.springsecurity.demo.user.UserCrm;
 
 @Controller
+@SessionAttributes( { "joinRideSearchList", "numOfPassengersInSharerParty" })
 public class DemoController {
 
 	@Autowired
@@ -227,7 +232,7 @@ public class DemoController {
 	
 	@PostMapping("/processJoinRequest")
 	public String processJoinRequest(@Valid @ModelAttribute("theSharerCrm") SharerCrm theSharerCrm,
-			BindingResult theBindingResult) {
+			BindingResult theBindingResult, Model theModel) {
 		
 		if (theBindingResult.hasErrors()) {
 			return "join-a-ride";
@@ -239,6 +244,53 @@ public class DemoController {
 		User user = userService.findUserByUsername(username);
 		
 		List<RideRequest> joinRequestSearch = userService.query(theSharerCrm, user);
+		theModel.addAttribute("joinRideSearchList", joinRequestSearch);
+		theModel.addAttribute("numOfPassengersInSharerParty", theSharerCrm.getTotalPassengers());
 		return "join-ride-search-result";
+	}
+	
+	@GetMapping("/joinARideWithOthers")
+	public String joinARideWithOthers(@RequestParam("rideRequestId") int rideRequestId,
+			@RequestParam("numOfPassengersInSharerParty") int numOfPassengersInSharerParty,
+			// @RequestParam("originalSearchResult") List<RideRequest> originalSearchResult,
+			Model theModel) {
+		
+		Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();
+		String username = loggedInUser.getName();
+		User user = userService.findUserByUsername(username);
+		
+		RideRequest theRideRequest = userService.findTheRideRequest(rideRequestId);
+		
+		// The same user cannot join the same ride more than once
+		if (userService.checkIfJoinRide(theRideRequest, user)) {
+			
+			// let the user know they have already joined this ride
+			// add the parameter theModel
+			theModel.addAttribute("alreadyJoin", true);
+			// theModel.addAttribute("joinRideSearchList", originalSearchResult);
+			return "join-ride-search-result";
+		}
+		
+		Sharer theSharer = new Sharer();
+		
+		theSharer.setTotalPassengers(numOfPassengersInSharerParty);
+		theSharer.setUser(user);
+		theSharer.setRideRequest(theRideRequest);
+		
+		userService.save(theSharer);
+		
+		return "redirect:/employees";
+	}
+	
+	@GetMapping("/driverRideSearching")
+	public String driverRideSearching() {
+		
+		Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();
+		String username = loggedInUser.getName();
+		User user = userService.findUserByUsername(username);
+		
+		Driver theDriver = user.getDriver();
+		
+		return "driver-ride-search-result";
 	}
 }

@@ -18,6 +18,8 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBuilder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
@@ -27,7 +29,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 @ComponentScan(basePackages = "com.luv2code.springsecurity.demo")
 @EnableTransactionManagement
 @PropertySource("classpath:persistence-mysql.properties")
-public class DemoAppConfig {
+public class DemoAppConfig implements WebMvcConfigurer {
 
 	// set up variable to hold the properties
 
@@ -150,4 +152,9 @@ public class DemoAppConfig {
 
 		return txManager;
 	}
+	
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry.addResourceHandler("/css/**").addResourceLocations("classpath:/static/css/");
+    }
 }

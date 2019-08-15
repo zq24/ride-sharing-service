@@ -1,6 +1,7 @@
 package com.luv2code.springsecurity.demo.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -52,6 +54,11 @@ public class RideRequest {
 			CascadeType.DETACH, CascadeType.REFRESH})
 	@JoinColumn(name="user_id_number")
 	private User user;
+	
+	@OneToMany(mappedBy="rideRequest",
+			cascade= {CascadeType.PERSIST, CascadeType.MERGE,
+					CascadeType.DETACH, CascadeType.REFRESH})
+	private List<Sharer> listOfSharers;
 	
 	public RideRequest() {}
 
@@ -135,10 +142,20 @@ public class RideRequest {
 		this.totalPassengers = totalPassengers;
 	}
 
-	@Override
-	public String toString() {
-		return "RideRequest [id=" + id + ", customerLocation=" + customerLocation + ", destination=" + destination
-				+ ", dateTime=" + dateTime + ", vehicleType=" + vehicleType + ", shareable=" + shareable
-				+ ", specialRequest=" + specialRequest + "]";
+	public List<Sharer> getListOfSharers() {
+		return listOfSharers;
 	}
+
+	public void setListOfSharers(List<Sharer> listOfSharers) {
+		this.listOfSharers = listOfSharers;
+	}
+
+	/*
+	 * @Override public String toString() { return "RideRequest [id=" + id +
+	 * ", customerLocation=" + customerLocation + ", destination=" + destination +
+	 * ", dateTime=" + dateTime + ", vehicleType=" + vehicleType + ", shareable=" +
+	 * shareable + ", specialRequest=" + specialRequest + ", totalPassengers=" +
+	 * totalPassengers + ", requestStatus=" + requestStatus + ", user=" + user +
+	 * ", listOfSharers=" + listOfSharers + "]"; }
+	 */
 }

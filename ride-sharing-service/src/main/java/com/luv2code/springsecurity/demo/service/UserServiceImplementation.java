@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.luv2code.springsecurity.demo.dao.UserDao;
 import com.luv2code.springsecurity.demo.entity.RideRequest;
 import com.luv2code.springsecurity.demo.entity.Role;
+import com.luv2code.springsecurity.demo.entity.Sharer;
 import com.luv2code.springsecurity.demo.entity.User;
 import com.luv2code.springsecurity.demo.user.SharerCrm;
 import com.luv2code.springsecurity.demo.user.UserCrm;
@@ -91,5 +92,24 @@ public class UserServiceImplementation implements UserService {
 		
 		List<RideRequest> joinRequestList = userDao.query(theSharerCrm, user);
 		return joinRequestList;
+	}
+
+	@Override
+	@Transactional
+	public RideRequest findTheRideRequest(int rideRequestId) {
+		RideRequest theRideRequest = userDao.findTheRideRequest(rideRequestId);
+		return theRideRequest;
+	}
+
+	@Override
+	@Transactional
+	public void save(Sharer theSharer) {
+		userDao.save(theSharer);
+	}
+
+	@Override
+	@Transactional
+	public boolean checkIfJoinRide(RideRequest theRideRequest, User user) {
+		return userDao.checkIfJoinRide(theRideRequest, user);
 	}
 }

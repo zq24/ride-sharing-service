@@ -73,9 +73,9 @@ public class Driver {
 		this.user = user;
 	}
 
-	@Override
-	public String toString() {
-		return "Driver [id=" + id + ", licensePlateNumber=" + licensePlateNumber + ", carType=" + carType
-				+ ", maxOccupants=" + maxOccupants + "]";
-	}
+	/*
+	 * @Override public String toString() { return "Driver [id=" + id +
+	 * ", licensePlateNumber=" + licensePlateNumber + ", carType=" + carType +
+	 * ", maxOccupants=" + maxOccupants + "]"; }
+	 */
 }

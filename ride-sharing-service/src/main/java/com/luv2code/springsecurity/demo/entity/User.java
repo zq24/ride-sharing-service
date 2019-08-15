@@ -57,6 +57,11 @@ public class User {
 					CascadeType.DETACH, CascadeType.REFRESH})
 	private List<RideRequest> rideRequests;
 	
+	@OneToMany(mappedBy="user",
+			cascade= {CascadeType.PERSIST, CascadeType.MERGE,
+					CascadeType.DETACH, CascadeType.REFRESH})
+	private List<Sharer> shareRequests;
+	
 	public User() {}
 
 	public int getId() {
@@ -129,6 +134,14 @@ public class User {
 
 	public void setRideRequests(List<RideRequest> rideRequests) {
 		this.rideRequests = rideRequests;
+	}
+
+	public List<Sharer> getShareRequests() {
+		return shareRequests;
+	}
+
+	public void setShareRequests(List<Sharer> shareRequests) {
+		this.shareRequests = shareRequests;
 	}
 
 	// add the convenience method for adding a role to this user
