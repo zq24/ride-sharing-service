@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.luv2code.springsecurity.demo.dao.UserDao;
+import com.luv2code.springsecurity.demo.entity.Driver;
 import com.luv2code.springsecurity.demo.entity.RideRequest;
 import com.luv2code.springsecurity.demo.entity.Role;
 import com.luv2code.springsecurity.demo.entity.Sharer;
@@ -111,5 +112,14 @@ public class UserServiceImplementation implements UserService {
 	@Transactional
 	public boolean checkIfJoinRide(RideRequest theRideRequest, User user) {
 		return userDao.checkIfJoinRide(theRideRequest, user);
+	}
+
+	@Override
+	@Transactional
+	public List<RideRequest> allRideRequests(Driver theDriver) {
+		
+		List<RideRequest> rideRequestList = userDao.allRideRequests(theDriver);
+		
+		return rideRequestList;
 	}
 }

@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
@@ -36,7 +35,7 @@ import com.luv2code.springsecurity.demo.user.SharerCrm;
 import com.luv2code.springsecurity.demo.user.UserCrm;
 
 @Controller
-@SessionAttributes( { "joinRideSearchList", "numOfPassengersInSharerParty" })
+@SessionAttributes( { "joinRideSearchList", "numOfPassengersInSharerParty", "sharerVehicleType" })
 public class DemoController {
 
 	@Autowired
@@ -246,14 +245,21 @@ public class DemoController {
 		List<RideRequest> joinRequestSearch = userService.query(theSharerCrm, user);
 		theModel.addAttribute("joinRideSearchList", joinRequestSearch);
 		theModel.addAttribute("numOfPassengersInSharerParty", theSharerCrm.getTotalPassengers());
+		
+		// pass the vehicle type that the sharer asked for into JSP page
+		theModel.addAttribute("sharerVehicleType", theSharerCrm.getVehicleType());
+		
 		return "join-ride-search-result";
 	}
 	
 	@GetMapping("/joinARideWithOthers")
 	public String joinARideWithOthers(@RequestParam("rideRequestId") int rideRequestId,
 			@RequestParam("numOfPassengersInSharerParty") int numOfPassengersInSharerParty,
+			@RequestParam("sharerVehicleType") String sharerVehicleType,
 			// @RequestParam("originalSearchResult") List<RideRequest> originalSearchResult,
 			Model theModel) {
+		
+		System.out.println("Sharer's requested vehicle type: " + sharerVehicleType);
 		
 		Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();
 		String username = loggedInUser.getName();
@@ -275,6 +281,18 @@ public class DemoController {
 		
 		theSharer.setTotalPassengers(numOfPassengersInSharerParty);
 		theSharer.setUser(user);
+		
+		// if the vehicle type for this ride request is DoesNotMatter, which
+		// means it does matter which vehicle type for the OWNER, and if the SHARER's
+		// vehicle type is NOT DoesNotMatter, update this ride request original vehicle type,
+		// which is DoesNotMatter, to a new type
+		
+		System.out.println("Sharer's requested vehicle type: " + sharerVehicleType);
+		
+		if (theRideRequest.getVehicleType().equals("DoesNotMatter")) {
+			theRideRequest.setVehicleType(sharerVehicleType);
+		}
+		
 		theSharer.setRideRequest(theRideRequest);
 		
 		userService.save(theSharer);
@@ -283,14 +301,31 @@ public class DemoController {
 	}
 	
 	@GetMapping("/driverRideSearching")
-	public String driverRideSearching() {
-		
+	public String driverRideSearching(Model theModel) {
+
 		Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();
 		String username = loggedInUser.getName();
 		User user = userService.findUserByUsername(username);
-		
+
+		// Make sure the results would only show the ride requests when driver's vehicle
+		// specifications match the request requirements
+
+		// get the driver's information
 		Driver theDriver = user.getDriver();
-		
+
+		List<RideRequest> rideRequestList = userService.allRideRequests(theDriver);
+		theModel.addAttribute("allRideRequests", rideRequestList);
+
 		return "driver-ride-search-result";
+	}
+	
+	@GetMapping("/confirmAcceptingRequest")
+	public String confirmAcceptingRequest(@RequestParam("rideRequestId") int rideRequestId) {
+		
+		// One Driver could accept/have Many ride request
+		// Get this driver and add this accepted request to its ride request list
+		// save the driver to the DB
+		
+		return "redirect:/employees";
 	}
 }

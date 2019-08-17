@@ -2,6 +2,7 @@ package com.luv2code.springsecurity.demo.dao;
 
 import java.util.List;
 
+import com.luv2code.springsecurity.demo.entity.Driver;
 import com.luv2code.springsecurity.demo.entity.RideRequest;
 import com.luv2code.springsecurity.demo.entity.Sharer;
 import com.luv2code.springsecurity.demo.entity.User;
@@ -24,4 +25,6 @@ public interface UserDao {
 	public void save(Sharer theSharer);
 
 	public boolean checkIfJoinRide(RideRequest theRideRequest, User user);
+
+	public List<RideRequest> allRideRequests(Driver theDriver);
 }

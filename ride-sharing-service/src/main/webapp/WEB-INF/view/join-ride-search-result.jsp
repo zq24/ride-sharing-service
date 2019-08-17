@@ -49,11 +49,11 @@
 				<c:url var="joinLink" value="/joinARideWithOthers">
 					<c:param name="rideRequestId" value="${tempJoinRide.id}" />
 					<c:param name="numOfPassengersInSharerParty" value="${numOfPassengersInSharerParty}" />
-					<!-- <c:param name="originalSearchResult" value="${joinRideSearchList}"></c:param> -->
+					<c:param name="sharerVehicleType" value="${sharerVehicleType}"></c:param>
 				</c:url>
 				
 					<tr>
-						<td> ${tempJoinRide.user.firstName} </td>
+						<td> ${tempJoinRide.user.firstName} ${tempJoinRide.user.lastName} </td>
 						<td> ${tempJoinRide.customerLocation} </td>
 						<td> ${tempJoinRide.destination} </td>
 						<td> ${tempJoinRide.dateTime} </td>
