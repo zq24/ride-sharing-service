@@ -1,11 +1,14 @@
 package com.luv2code.springsecurity.demo.entity;
 
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -30,6 +33,11 @@ public class Driver {
 	@OneToOne(mappedBy="driver", cascade= {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
 			CascadeType.REFRESH})
 	private User user;
+	
+	@OneToMany(mappedBy="theDriverThatAcceptThisRequest",
+			cascade= {CascadeType.PERSIST, CascadeType.MERGE,
+					CascadeType.DETACH, CascadeType.REFRESH})
+	private List<RideRequest> acceptedRideRequestsList;
 	
 	public Driver() {}
 
@@ -71,6 +79,14 @@ public class Driver {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public List<RideRequest> getAcceptedRideRequestsList() {
+		return acceptedRideRequestsList;
+	}
+
+	public void setAcceptedRideRequestsList(List<RideRequest> acceptedRideRequestsList) {
+		this.acceptedRideRequestsList = acceptedRideRequestsList;
 	}
 
 	/*

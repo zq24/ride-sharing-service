@@ -183,11 +183,14 @@ public class UserDaoImplementation implements UserDao {
 		Root<RideRequest> root = criteria.from(RideRequest.class);
 		criteria.select(root);
 		
+		Predicate predicateForRequestStatusSharedAllow = builder.equal(root.get("requestStatus"), RequestStatus.SHARED_ALLOWED_OPEN);
+		Predicate predicateForRequestStatusSharedNotAllow = builder.equal(root.get("requestStatus"), RequestStatus.SHARED_NOT_ALLOWED_OPEN);
+		Predicate predicateForRequestStatusFinal = builder.or(predicateForRequestStatusSharedAllow, predicateForRequestStatusSharedNotAllow);
 		Predicate predicateForVehicleType = builder.equal(root.get("vehicleType"), vehicleType);
 		Predicate predicateForVehicleTypeNotCare = builder.equal(root.get("vehicleType"), "DoesNotMatter");
 		Predicate predicateFinalVehicle = builder.or(predicateForVehicleType, predicateForVehicleTypeNotCare);
 		Predicate predicateDriverCannotAcceptOwnRequest = builder.notEqual(root.get("user"), theDriver.getUser());
-		Predicate finalPredicate = builder.and(predicateFinalVehicle, predicateDriverCannotAcceptOwnRequest);
+		Predicate finalPredicate = builder.and(predicateFinalVehicle, predicateDriverCannotAcceptOwnRequest, predicateForRequestStatusFinal);
 		criteria.where(finalPredicate);
 		
 		List<RideRequest> rideRequestList = currentSession.createQuery(criteria).getResultList();

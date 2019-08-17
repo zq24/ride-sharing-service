@@ -66,6 +66,11 @@ public class RideRequest {
 	@Fetch(value = FetchMode.SUBSELECT)
 	private List<Sharer> listOfSharers;
 	
+	@ManyToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE,
+			CascadeType.DETACH, CascadeType.REFRESH})
+	@JoinColumn(name="driver_id")
+	private Driver theDriverThatAcceptThisRequest;
+	
 	public RideRequest() {}
 
 	public int getId() {
@@ -154,6 +159,14 @@ public class RideRequest {
 
 	public void setListOfSharers(List<Sharer> listOfSharers) {
 		this.listOfSharers = listOfSharers;
+	}
+
+	public Driver getTheDriverThatAcceptThisRequest() {
+		return theDriverThatAcceptThisRequest;
+	}
+
+	public void setTheDriverThatAcceptThisRequest(Driver theDriverThatAcceptThisRequest) {
+		this.theDriverThatAcceptThisRequest = theDriverThatAcceptThisRequest;
 	}
 
 	/*

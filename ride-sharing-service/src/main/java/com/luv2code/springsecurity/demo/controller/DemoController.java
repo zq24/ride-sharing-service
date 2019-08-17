@@ -324,8 +324,17 @@ public class DemoController {
 		
 		// One Driver could accept/have Many ride request
 		// Get this driver and add this accepted request to its ride request list
-		// save the driver to the DB
+		Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();
+		String username = loggedInUser.getName();
+		User user = userService.findUserByUsername(username);
 		
+		Driver theDriver = user.getDriver();
+		RideRequest theRideRequest = userService.findTheRideRequest(rideRequestId);
+		theRideRequest.setRequestStatus(RequestStatus.COMFIRMED);
+		theRideRequest.setTheDriverThatAcceptThisRequest(theDriver);
+		
+		// save the driver to the DB
+		userService.update(theRideRequest);
 		return "redirect:/employees";
 	}
 }
