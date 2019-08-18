@@ -83,7 +83,7 @@
 			<artifactId>spring-orm</artifactId>
 			<version>${springframework.version}</version>
 		</dependency>
-		
+
 		<!-- Hibernate Core -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -123,6 +123,56 @@
 			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- Add support for sending the email -->
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${springframework.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${springframework.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${springframework.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>javax.mail</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>javax.mail-api</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+		
+		<dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4.7</version>
+        </dependency>
+
+		<dependency>
+			<groupId>javax.activation</groupId>
+			<artifactId>activation</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+		
+		<dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${springframework.version}</version>
+        </dependency>
 
 	</dependencies>
 

@@ -13,6 +13,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBuilder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -157,4 +159,24 @@ public class DemoAppConfig implements WebMvcConfigurer {
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/css/**").addResourceLocations("classpath:/static/css/");
     }
+	
+	// configure the bean for sending the email
+	@Bean
+	public JavaMailSender getMailSender() {
+		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+		// Using Gmail SMTP configuration.
+		mailSender.setHost("smtp.gmail.com");
+		mailSender.setPort(587);
+		mailSender.setUsername("zhaomingqin0518@gmail.com");
+		mailSender.setPassword("ak47xrsq3");
+
+		Properties javaMailProperties = new Properties();
+		javaMailProperties.put("mail.smtp.starttls.enable", "true");
+		javaMailProperties.put("mail.smtp.auth", "true");
+		javaMailProperties.put("mail.transport.protocol", "smtp");
+		javaMailProperties.put("mail.debug", "true");
+
+		mailSender.setJavaMailProperties(javaMailProperties);
+		return mailSender;
+	}
 }

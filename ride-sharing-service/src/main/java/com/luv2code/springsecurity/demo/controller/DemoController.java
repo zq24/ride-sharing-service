@@ -28,6 +28,7 @@ import com.luv2code.springsecurity.demo.entity.RideRequest;
 import com.luv2code.springsecurity.demo.entity.Role;
 import com.luv2code.springsecurity.demo.entity.Sharer;
 import com.luv2code.springsecurity.demo.entity.User;
+import com.luv2code.springsecurity.demo.service.OrderService;
 import com.luv2code.springsecurity.demo.service.UserService;
 import com.luv2code.springsecurity.demo.user.DriverCrm;
 import com.luv2code.springsecurity.demo.user.RiderCrm;
@@ -40,6 +41,10 @@ public class DemoController {
 
 	@Autowired
 	private UserService userService;
+	
+	// use the orderService
+	@Autowired
+	private OrderService orderService;
 
 	@InitBinder
 	public void initBinder(WebDataBinder dataBinder) {
@@ -335,6 +340,7 @@ public class DemoController {
 		
 		// save the driver to the DB
 		userService.update(theRideRequest);
+		orderService.sendOrderConfirmation(theRideRequest);
 		return "redirect:/employees";
 	}
 }
